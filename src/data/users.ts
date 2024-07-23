@@ -1,3 +1,7 @@
+import {User} from './../interfaces/userInterface'
+
+export const userDataList: User [] =
+
 [
     {
         "foto": "https://media.istockphoto.com/id/1816588199/es/foto/hombre-feliz-retrato-y-asi%C3%A1tico-en-una-sala-de-estar-por-la-noche-con-confianza-buen-humor-y.webp?b=1&s=170667a&w=0&k=20&c=eU-prcQNKCh7OnDvfMDfdVG0LZ8GCenJKzFfI7N2q-M=",

@@ -1,6 +1,6 @@
 import { Booking } from './../interfaces/bookingInterface';
 import { APIError } from './../utils/APIError';
-import bookingDataList from './../../src/data/bookings'
+import {bookingDataList} from './../../src/data/bookings'
 
 export class BookingModel implements Booking {
     id: number;

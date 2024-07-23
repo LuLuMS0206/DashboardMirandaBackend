@@ -1,3 +1,7 @@
+import {Contact} from './../interfaces/contactInterface'
+
+export const contactDataList: Contact [] =
+
 [
     {
         "date": "06/07/2024",

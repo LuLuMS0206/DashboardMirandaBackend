@@ -1,3 +1,7 @@
+import {RoomInterface} from './../interfaces/roomInterface'
+
+export const roomDataList: RoomInterface [] =
+
 [
     {
         "id": "ROOM101",

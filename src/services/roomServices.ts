@@ -1,5 +1,5 @@
 import { RoomInterface } from './../../src/interfaces/roomInterface';
-import roomDataList from './../../src/data/rooms';
+import {roomDataList} from './../../src/data/rooms';
 import { APIError } from './../utils/APIError';
 import fs from 'fs';
 import path from 'path';

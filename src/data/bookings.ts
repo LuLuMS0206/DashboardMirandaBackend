@@ -1,4 +1,6 @@
-[
+import {Booking} from './../interfaces/bookingInterface'
+
+export const bookingDataList: Booking [] = [
     {
         "id": 1,
         "guest": "John Doe",
