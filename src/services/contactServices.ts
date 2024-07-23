@@ -1,5 +1,5 @@
 import { Contact } from '../interfaces/contactInterface';
-import contactDataList from '../data/contacts.json';
+import contactDataList from './../data/contacts';
 import { APIError } from '../utils/APIError';
 
 export class ContactService {

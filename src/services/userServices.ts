@@ -1,5 +1,5 @@
 import { User } from '../interfaces/userInterface';
-import userDataList from '../data/users.json';
+import userDataList from './../data/users';
 import { APIError } from '../utils/APIError';
 
 export class UserService {
