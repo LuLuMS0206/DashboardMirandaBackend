@@ -7,4 +7,5 @@ export interface User {
     contact: string;
     status: 'ACTIVE' | 'INACTIVE';
     foto: string;
+    password?: string;
 }
