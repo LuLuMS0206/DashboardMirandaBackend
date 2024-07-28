@@ -3,7 +3,6 @@ import { app } from '../app';
 import jwt from 'jsonwebtoken';
 import {bookingDataList} from './../data/bookings';
 
-// Asegúrate de que process.env.TOKEN_SECRET está definido
 if (!process.env.TOKEN_SECRET) {
   throw new Error('TOKEN_SECRET is not defined in environment variables');
 }
@@ -23,6 +22,6 @@ describe('Bookings API', () => {
 
     expect(res.statusCode).toEqual(200);
     expect(res.body).toBeInstanceOf(Array);
-    expect(res.body).toEqual(bookingDataList); // Verifica que los datos coincidan con los esperados
+    expect(res.body).toEqual(bookingDataList); 
   });
 });

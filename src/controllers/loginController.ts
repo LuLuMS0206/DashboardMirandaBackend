@@ -1,9 +1,9 @@
-import express, { Request, Response, NextFunction } from 'express';
+import express, { Request, Response } from 'express';
 import LoginModel from './../services/loginService';
 
 const loginController = express.Router();
 
-loginController.post('/', (req: Request, res: Response, next: NextFunction): void => {
+loginController.post('/', (req: Request, res: Response): void => {
     try {
         const token: string = LoginModel.authenticateUser(req.body.userName, req.body.password);
         res.json({ token });
