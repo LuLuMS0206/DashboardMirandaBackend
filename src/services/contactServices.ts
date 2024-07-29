@@ -1,39 +1,60 @@
-import { Contact } from '../interfaces/contactInterface';
-import { contactDataList } from '../data/contacts';
-import { APIError } from '../utils/APIError';
+
+import { Contact } from './../interfaces/contactInterface';
+import { APIError } from './../utils/APIError';
+import { ContactModel, ContactDocument } from '../models/contactModel';
 
 export class ContactService {
-  static fetchAll(): Contact[] {
-    return contactDataList as Contact[];
-  }
-
-  static fetchOne(contactId: number): Contact {
-    const contact = contactDataList.find((contact: Contact) => contact.id === contactId);
-    if (!contact) {
-      throw new APIError('Contact not found', 404, true);
+    static async fetchAll(): Promise<ContactDocument[]> {
+        try {
+            return await ContactModel.find().exec();
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
     }
-    return contact;
-  }
 
-  static addContact(newContact: Contact): void {
-    contactDataList.push(newContact);
-  }
-
-  static removeContact(contactId: number): Contact[] {
-    const index = contactDataList.findIndex((contact: Contact) => contact.id === contactId);
-    if (index === -1) {
-      throw new APIError('Contact not found', 404, true);
+    static async fetchOne(contactId: number): Promise<ContactDocument | null> {
+        try {
+            const contact = await ContactModel.findOne({ id: contactId }).exec();
+            if (!contact) throw new APIError('Contact not found', 404, true);
+            return contact;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
     }
-    contactDataList.splice(index, 1);
-    return contactDataList;
-  }
 
-  static modifyContact(modifiedContact: Contact): Contact[] {
-    const index = contactDataList.findIndex((contact: Contact) => contact.id === modifiedContact.id);
-    if (index === -1) {
-      throw new APIError('Contact not found', 404, true);
+    static async addContact(newContact: Contact): Promise<ContactDocument> {
+        try {
+            const contact = new ContactModel({
+                ...newContact,
+                id: newContact.id, // Mantenemos el id proporcionado
+            });
+            await contact.save();
+            return contact;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
     }
-    contactDataList[index] = modifiedContact;
-    return contactDataList;
-  }
+
+    static async removeContact(contactId: number): Promise<void> {
+        try {
+            const result = await ContactModel.findOneAndDelete({ id: contactId }).exec();
+            if (!result) throw new APIError('Contact not found', 404, true);
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
+    }
+
+    static async modifyContact(modifiedContact: Contact): Promise<ContactDocument | null> {
+        try {
+            const contact = await ContactModel.findOneAndUpdate(
+                { id: modifiedContact.id },
+                modifiedContact,
+                { new: true }
+            ).exec();
+            if (!contact) throw new APIError('Contact not found', 404, true);
+            return contact;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
+    }
 }

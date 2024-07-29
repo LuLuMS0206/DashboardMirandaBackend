@@ -1,88 +1,66 @@
-import { RoomInterface } from './../../src/interfaces/roomInterface';
-import {roomDataList} from './../../src/data/rooms';
+
+import { RoomInterface } from './../interfaces/roomInterface';
+import { RoomModel, RoomDocument } from '../models/roomModel';
 import { APIError } from './../utils/APIError';
-import fs from 'fs';
-import path from 'path';
 
-export class RoomModel implements RoomInterface {
-  id: string;
-  image: string;
-  roomNumber: string;
-  roomType: string;
-  amenities: string[];
-  price: number;
-  offerPrice: number;
-  status: string;
-  availability: string;
+export class RoomService {
+    static async fetchAll(): Promise<RoomDocument[]> {
+        try {
+            return await RoomModel.find().exec();
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
+    }
 
-  constructor(room: RoomInterface) {
-    this.id = room.id;
-    this.image = room.image;
-    this.roomNumber = room.roomNumber;
-    this.roomType = room.roomType;
-    this.amenities = room.amenities;
-    this.price = room.price;
-    this.offerPrice = room.offerPrice;
-    this.status = room.status;
-    this.availability = room.availability;
-  }
+    static async fetchOne(roomId: string): Promise<RoomDocument | null> {
+        try {
+            const room = await RoomModel.findOne({ _id: roomId }).exec();
+            if (!room) throw new APIError('Room not found', 404, true);
+            return room;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
+    }
 
-  static fetchOne(roomId: string): RoomModel | void {
-    const roomList = roomDataList as RoomModel[];
-    if (!roomList) throw new APIError("There is no rooms data", 500, false);
+    static async addRoom(newRoom: RoomInterface): Promise<RoomDocument> {
+        try {
+            const room = new RoomModel(newRoom);
+            await room.save();
+            return room;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
+    }
 
-    const room = roomList.find((room: RoomModel) => room.id === roomId);
-    if (!room) throw new APIError("Room not found", 400, true);
+    static async removeRoom(roomId: string): Promise<void> {
+        try {
+            const result = await RoomModel.findByIdAndDelete(roomId).exec();
+            if (!result) throw new APIError('Room not found', 404, true);
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
+    }
 
-    return new RoomModel(room);
-  }
+    static async modifyRoom(modifiedRoom: RoomInterface & { _id: string }): Promise<RoomDocument | null> {
+        try {
+            const room = await RoomModel.findByIdAndUpdate(modifiedRoom._id, modifiedRoom, { new: true }).exec();
+            if (!room) throw new APIError('Room not found', 404, true);
+            return room;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
+    }
 
-  static fetchAll(): RoomModel[] {
-    const roomList = roomDataList as RoomModel[];
-    if (!roomList) throw new APIError("There is no rooms data", 500, false);
-
-    return roomList.map(room => new RoomModel(room));
-  }
-
-  static searchRooms(searchTerm: string): RoomModel[] {
-    const roomList = roomDataList as RoomModel[];
-    if (!roomList) throw new APIError("There is no rooms data", 500, false);
-
-    const filteredRoomList = roomList.filter((room: RoomModel) =>
-      room.roomType.includes(searchTerm) ||
-      room.amenities.some(amenity => amenity.includes(searchTerm))
-    );
-
-    return filteredRoomList.map(room => new RoomModel(room));
-  }
-
-  static addRoom(newRoom: RoomInterface): void {
-    const roomList = roomDataList as RoomModel[];
-    const room = new RoomModel(newRoom);
-    roomList.push(room);
-    saveRooms(roomList);
-  }
-
-  static removeRoom(roomId: string): RoomModel[] {
-    let roomList = roomDataList as RoomModel[];
-    roomList = roomList.filter((room: RoomModel) => room.id !== roomId);
-    saveRooms(roomList);
-    return roomList.map(room => new RoomModel(room));
-  }
-
-  static modifyRoom(modifiedRoom: RoomInterface): RoomModel[] {
-    let roomList = roomDataList as RoomModel[];
-    roomList = roomList.map(room => room.id === modifiedRoom.id ? new RoomModel(modifiedRoom) : room);
-    saveRooms(roomList);
-    return roomList.map(room => new RoomModel(room));
-  }
-}
-
-function saveRooms(rooms: RoomModel[]): void {
-  const dataPath = path.join(__dirname, '../data/rooms.json');
-  try {
-    fs.writeFileSync(dataPath, JSON.stringify(rooms, null, 2));
-  } catch (err) {
-    console.error('Error saving rooms:', err);
-  }
+    static async searchRooms(searchTerm: string): Promise<RoomDocument[]> {
+        try {
+            return await RoomModel.find({
+                $or: [
+                    { roomType: { $regex: searchTerm, $options: 'i' } },
+                    { amenities: { $elemMatch: { $regex: searchTerm, $options: 'i' } } }
+                ]
+            }).exec();
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
+    }
 }

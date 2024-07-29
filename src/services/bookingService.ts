@@ -1,89 +1,62 @@
 import { Booking } from './../interfaces/bookingInterface';
 import { APIError } from './../utils/APIError';
-import {bookingDataList} from './../../src/data/bookings'
+import { BookingModel, BookingDocument } from './../models/bookingModel';
 
-export class BookingModel implements Booking {
-    id: number;
-    guest: string;
-    checkIn: string;
-    checkOut: string;
-    roomType: string;
-    specialRequest: string;
-    status: string;
-    orderDate: string;
-
-    constructor(booking: Booking) {
-        this.id = booking.id;
-        this.guest = booking.guest;
-        this.checkIn = booking.checkIn;
-        this.checkOut = booking.checkOut;
-        this.roomType = booking.roomType;
-        this.specialRequest = booking.specialRequest;
-        this.status = booking.status;
-        this.orderDate = booking.orderDate;
+export class BookingService {
+    static async fetchOne(bookingId: string): Promise<BookingDocument | null> {
+        try {
+            const booking = await BookingModel.findById(bookingId).exec();
+            if (!booking) throw new APIError("Booking not found", 404, true);
+            return booking;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
     }
 
-    static fetchOne(bookingId: number): BookingModel | void {
-        const bookingList = bookingDataList as BookingModel[];
-        if (!bookingList)
-            throw new APIError("There is no bookings data", 500, false);
-
-        const booking = bookingList.find((booking: BookingModel) => booking.id === bookingId);
-        if (!booking)
-            throw new APIError("Booking not found", 400, true);
-        
-        return new BookingModel(booking);
+    static async fetchAll(): Promise<BookingDocument[]> {
+        try {
+            const bookings = await BookingModel.find().exec();
+            return bookings;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
     }
 
-    static fetchAll(): BookingModel[] | void {
-        const bookingList = bookingDataList as BookingModel[];
-        if (!bookingList)
-            throw new APIError("There is no bookings data", 500, false);
-
-        return bookingList.map(booking => new BookingModel(booking));
+    static async searchBookings(searchTerm: string): Promise<BookingDocument[]> {
+        try {
+            const bookings = await BookingModel.find({ guest: new RegExp(searchTerm, 'i') }).exec();
+            return bookings;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
     }
 
-    static searchBookings(searchTerm: string): BookingModel[] | void {
-        const bookingList = bookingDataList as BookingModel[];
-        if (!bookingList)
-            throw new APIError("There is no bookings data", 500, false);
-
-        const filteredBookingList = bookingList.filter((booking: BookingModel) =>
-            booking.guest.includes(searchTerm)
-        );
-
-        return filteredBookingList.map(booking => new BookingModel(booking));
+    static async addBooking(newBooking: Booking): Promise<BookingDocument> {
+        try {
+            const booking = new BookingModel(newBooking);
+            await booking.save();
+            return booking;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
     }
 
-    static addBooking(newBooking: Booking): void {
-        const bookingList = bookingDataList as BookingModel[];
-        const booking = new BookingModel(newBooking);
-        bookingList.push(booking);
-        saveBookings(bookingList);
+    static async removeBooking(bookingId: string): Promise<void> {
+        try {
+            const result = await BookingModel.findByIdAndDelete(bookingId).exec();
+            if (!result) throw new APIError("Booking not found", 404, true);
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
     }
 
-    static removeBooking(bookingId: number): BookingModel[] {
-        let bookingList = bookingDataList as BookingModel[];
-        bookingList = bookingList.filter((booking: BookingModel) => booking.id !== bookingId);
-        saveBookings(bookingList);
-        return bookingList.map(booking => new BookingModel(booking));
-    }
-
-    static modifyBooking(modifiedBooking: Booking): BookingModel[] {
-        let bookingList = bookingDataList as BookingModel[];
-        bookingList = bookingList.map(booking => booking.id === modifiedBooking.id ? new BookingModel(modifiedBooking) : booking);
-        saveBookings(bookingList);
-        return bookingList.map(booking => new BookingModel(booking));
-    }
-}
-
-function saveBookings(bookings: BookingModel[]): void {
-    const fs = require('fs');
-    const path = require('path');
-    const dataPath = path.join(__dirname, '../../data/bookings.json');
-    try {
-        fs.writeFileSync(dataPath, JSON.stringify(bookings, null, 2));
-    } catch (err) {
-        console.error('Error saving bookings:', err);
+    static async modifyBooking(modifiedBooking: Booking): Promise<BookingDocument | null> {
+        try {
+            const booking = await BookingModel.findByIdAndUpdate(modifiedBooking.id, modifiedBooking, { new: true }).exec();
+            if (!booking) throw new APIError("Booking not found", 404, true);
+            return booking;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
     }
 }
