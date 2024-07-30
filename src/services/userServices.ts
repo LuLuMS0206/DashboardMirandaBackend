@@ -1,4 +1,5 @@
 
+
 import { User } from './../interfaces/userInterface';
 import { UserModel, UserDocument } from '../models/userModel';
 import { APIError } from './../utils/APIError';
@@ -54,6 +55,20 @@ export class UserService {
         try {
             const user = await UserModel.findByIdAndUpdate(modifiedUser._id, modifiedUser, { new: true }).exec();
             if (!user) throw new APIError('User not found', 404, true);
+            return user;
+        } catch (error) {
+            throw new APIError((error as Error).message, 500, false);
+        }
+    }
+
+    static async authenticate(email: string, password: string): Promise<UserDocument | null> {
+        try {
+            const user = await UserModel.findOne({ email }).exec();
+            if (!user) throw new APIError('User not found', 404, true);
+
+            const isMatch = await user.comparePassword(password);
+            if (!isMatch) throw new APIError('Invalid credentials', 401, true);
+
             return user;
         } catch (error) {
             throw new APIError((error as Error).message, 500, false);
