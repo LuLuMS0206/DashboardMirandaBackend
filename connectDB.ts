@@ -1,16 +1,13 @@
-import mongoose from 'mongoose';
+
+const mongoose = require("mongoose"); 
 
 export async function connectDB() {
 
-    mongoose.connection.on('connected', () => {
+    try {
+        await mongoose.connect('mongodb://localhost:27017/apiMiranda');
         console.log('Mongoose connected to database');
-    });
-
-    mongoose.connection.on('error', (err) => {
+    }catch (err) {
         console.error('Mongoose connection error:', err);
-    });
+    }
     
-    await mongoose.connect(process.env.MONGO_STRING!);
 }
-
-connectDB().catch(err => console.log(err));

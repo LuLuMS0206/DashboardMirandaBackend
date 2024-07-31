@@ -1,62 +1,132 @@
+// import express, { Request, Response, NextFunction } from 'express';
+// import { RoomService } from './../services/roomServices'; 
+// import { RoomInterface } from './../interfaces/roomInterface';
+
+// const roomController = express.Router();
+
+// roomController.get('/', async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+//     try {
+//         const rooms = await RoomService.fetchAll();
+//         res.json({ rooms });
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
+// roomController.get('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+//     try {
+//         const id = req.params.id; 
+//         const room = await RoomService.fetchOne(id);
+//         if (room) {
+//             res.json({ room });
+//         } else {
+//             res.status(404).json({ message: 'Room not found' });
+//         }
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
+// roomController.post('/', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+//     try {
+//         const newRoom = req.body as RoomInterface;
+//         const room = await RoomService.addRoom(newRoom);
+//         res.status(201).json({ room });
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
+// roomController.delete('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+//     try {
+//         const id = req.params.id; 
+//         await RoomService.removeRoom(id);
+//         res.status(204).send();
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
+// roomController.put('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+//     try {
+//         const id = req.params.id; 
+//         const modifiedRoom = req.body as RoomInterface;
+//         const room = await RoomService.modifyRoom({ ...modifiedRoom, id });
+//         if (room) {
+//             res.json({ room });
+//         } else {
+//             res.status(404).json({ message: 'Room not found' });
+//         }
+//     } catch (error) {
+//         next(error);
+//     }
+// });
+
+// export default roomController;
+
 
 import express, { Request, Response, NextFunction } from 'express';
-import { RoomModel } from './../../src/services/roomServices';
+import { RoomService } from './../services/roomServices';
 import { RoomInterface } from './../interfaces/roomInterface';
 
 const roomController = express.Router();
 
-roomController.get('/', (_req: Request, res: Response, next: NextFunction): void => {
-  try {
-    const rooms = RoomModel.fetchAll();
-    res.json({ rooms });
-  } catch (error) {
-    next(error);
-  }
-});
-
-roomController.get('/:id', (req: Request, res: Response, next: NextFunction): void => {
-  try {
-    const id = req.params.id;
-    const room = RoomModel.fetchOne(id);
-    if (room) {
-      res.json({ room });
-    } else {
-      res.status(404).json({ message: 'Room not found' });
+roomController.get('/', async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const rooms = await RoomService.fetchAll();
+        res.json({ rooms });
+    } catch (error) {
+        next(error);
     }
-  } catch (error) {
-    next(error);
-  }
 });
 
-roomController.post('/', (req: Request, res: Response, next: NextFunction): void => {
-  try {
-    const newRoom = req.body as RoomInterface;
-    RoomModel.addRoom(newRoom);
-    res.status(201).json({ room: newRoom });
-  } catch (error) {
-    next(error);
-  }
+roomController.get('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const id = req.params.id; 
+        const room = await RoomService.fetchOne(id);
+        if (room) {
+            res.json({ room });
+        } else {
+            res.status(404).json({ message: 'Room not found' });
+        }
+    } catch (error) {
+        next(error);
+    }
 });
 
-roomController.delete('/:id', (req: Request, res: Response, next: NextFunction): void => {
-  try {
-    const id = req.params.id;
-    const updatedRooms = RoomModel.removeRoom(id);
-    res.json({ rooms: updatedRooms });
-  } catch (error) {
-    next(error);
-  }
+roomController.post('/', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const newRoom = req.body as RoomInterface;
+        const room = await RoomService.addRoom(newRoom);
+        res.status(201).json({ room });
+    } catch (error) {
+        next(error);
+    }
 });
 
-roomController.put('/:id', (req: Request, res: Response, next: NextFunction): void => {
-  try {
-    const id = req.params.id;
-    const modifiedRoom = req.body as RoomInterface;
-    const updatedRooms = RoomModel.modifyRoom({ ...modifiedRoom, id });
-    res.json({ rooms: updatedRooms });
-  } catch (error) {
-    next(error);
-  }
+roomController.delete('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const id = req.params.id; 
+        await RoomService.removeRoom(id);
+        res.status(204).send(); 
+    } catch (error) {
+        next(error);
+    }
+});
+
+roomController.put('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+    try {
+        const id = req.params.id; 
+        const modifiedRoom = req.body as RoomInterface;
+        const room = await RoomService.modifyRoom({ ...modifiedRoom, _id: id });
+        if (room) {
+            res.json({ room });
+        } else {
+            res.status(404).json({ message: 'Room not found' });
+        }
+    } catch (error) {
+        next(error);
+    }
 });
 
 export default roomController;

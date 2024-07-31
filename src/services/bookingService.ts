@@ -1,3 +1,5 @@
+
+
 import { Booking } from './../interfaces/bookingInterface';
 import { APIError } from './../utils/APIError';
 import { BookingModel, BookingDocument } from './../models/bookingModel';
@@ -60,3 +62,4 @@ export class BookingService {
         }
     }
 }
+

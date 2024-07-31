@@ -1,5 +1,4 @@
-import mongoose, { Schema, Document } from "mongoose";
-import { Booking } from "./../interfaces/bookingInterface";
+import mongoose, { Document, Schema } from 'mongoose';
 
 export interface BookingDocument extends Document {
     guest: string;
@@ -11,14 +10,14 @@ export interface BookingDocument extends Document {
     orderDate: string;
 }
 
-const Booking: Schema<BookingDocument> = new Schema({
+const bookingSchema = new Schema<BookingDocument>({
     guest: { type: String, required: true },
     checkIn: { type: String, required: true },
     checkOut: { type: String, required: true },
     roomType: { type: String, required: true },
-    specialRequest: { type: String, required: true },
+    specialRequest: { type: String },
     status: { type: String, required: true },
-    orderDate: { type: String, required: true },
+    orderDate: { type: String, required: true }
 });
 
-export const BookingModel = mongoose.model<BookingDocument>('BookingModel', Booking, 'bookings');
+export const BookingModel = mongoose.model<BookingDocument>('Booking', bookingSchema);
