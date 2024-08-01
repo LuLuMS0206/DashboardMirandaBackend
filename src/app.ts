@@ -15,7 +15,7 @@ import mongoose from 'mongoose';
 const start = async () => {
   try {
     await mongoose.connect(
-      "mongodb://localhost:27017/apiMiranda"
+      "mongodb+srv://luciamacho00:wtNqhbB03R7ZFY2w@cluster0.qavfymp.mongodb.net/mirandaMongo"
     )
   } catch (error) {
     console.error(error);
