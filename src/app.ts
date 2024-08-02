@@ -1,5 +1,4 @@
 import express, { NextFunction, Request, Response } from 'express';
-// import path from 'path';
 import bookingController from './controllers/bookingControllers';
 import 'dotenv/config';
 import roomsController from './controllers/roomController';
@@ -8,9 +7,6 @@ import contactController from './controllers/contactController'
 import loginController from './controllers/loginController'
 import { authenticateTokenMiddleware } from './middleware/auth';
 import mongoose from 'mongoose';
-// import { connectDB } from '../connectDB';
-
-// connectDB()
 
 const start = async () => {
   try {
@@ -27,15 +23,15 @@ start();
 process.env.TOKEN_SECRET;
 
 export const app = express();
-// export const port = 3000;
 app.use(express.json());
-
+app.use('/', (_req, res)=>{
+  return res.send('Lucia')
+});
 app.use('/auth', loginController);
-app.use(authenticateTokenMiddleware);
-app.use('/bookings', bookingController);
-app.use('/rooms', roomsController);
-app.use('/users', userController);
-app.use('/contacts', contactController);
+app.use('/bookings',authenticateTokenMiddleware, bookingController);
+app.use('/rooms',authenticateTokenMiddleware, roomsController);
+app.use('/users',authenticateTokenMiddleware, userController);
+app.use('/contacts',authenticateTokenMiddleware, contactController);
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
