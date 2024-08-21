@@ -31,7 +31,7 @@ app.use(cors());
 
 app.use(express.json());
 
-app.use('/', (_req, res) => {
+app.use('/login', (_req, res) => {
   return res.send('Lucia');
 });
 
@@ -45,3 +45,5 @@ app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Unexpected error occurred' });
 });
+
+
