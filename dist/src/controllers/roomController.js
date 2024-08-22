@@ -76,7 +76,7 @@ const roomController = express_1.default.Router();
 roomController.get('/', (_req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const rooms = yield roomServices_1.RoomService.fetchAll();
-        res.json({ rooms });
+        res.json(rooms);
     }
     catch (error) {
         next(error);
@@ -87,7 +87,7 @@ roomController.get('/:id', (req, res, next) => __awaiter(void 0, void 0, void 0,
         const id = req.params.id;
         const room = yield roomServices_1.RoomService.fetchOne(id);
         if (room) {
-            res.json({ room });
+            res.json(room);
         }
         else {
             res.status(404).json({ message: 'Room not found' });
@@ -101,7 +101,7 @@ roomController.post('/', (req, res, next) => __awaiter(void 0, void 0, void 0, f
     try {
         const newRoom = req.body;
         const room = yield roomServices_1.RoomService.addRoom(newRoom);
-        res.status(201).json({ room });
+        res.status(201).json(room);
     }
     catch (error) {
         next(error);
@@ -123,7 +123,7 @@ roomController.put('/:id', (req, res, next) => __awaiter(void 0, void 0, void 0,
         const modifiedRoom = req.body;
         const room = yield roomServices_1.RoomService.modifyRoom(Object.assign(Object.assign({}, modifiedRoom), { _id: id }));
         if (room) {
-            res.json({ room });
+            res.json(room);
         }
         else {
             res.status(404).json({ message: 'Room not found' });

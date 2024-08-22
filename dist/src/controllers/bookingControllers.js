@@ -18,7 +18,7 @@ const bookingController = express_1.default.Router();
 bookingController.get('/', (_req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const bookings = yield bookingService_1.BookingService.fetchAll();
-        res.json({ bookings });
+        res.json(bookings);
     }
     catch (error) {
         next(error);
@@ -29,7 +29,7 @@ bookingController.get('/:id', (req, res, next) => __awaiter(void 0, void 0, void
         const id = req.params.id;
         const booking = yield bookingService_1.BookingService.fetchOne(id);
         if (booking) {
-            res.json({ booking });
+            res.json(booking);
         }
         else {
             res.status(404).json({ message: 'Booking not found' });
@@ -43,7 +43,7 @@ bookingController.post('/', (req, res, next) => __awaiter(void 0, void 0, void 0
     try {
         const newBooking = req.body;
         const booking = yield bookingService_1.BookingService.addBooking(newBooking);
-        res.status(201).json({ booking });
+        res.status(201).json(booking);
     }
     catch (error) {
         next(error);
@@ -65,7 +65,7 @@ bookingController.put('/:id', (req, res, next) => __awaiter(void 0, void 0, void
         const modifiedBooking = req.body;
         const booking = yield bookingService_1.BookingService.modifyBooking(Object.assign(Object.assign({}, modifiedBooking), { id }));
         if (booking) {
-            res.json({ booking });
+            res.json(booking);
         }
         else {
             res.status(404).json({ message: 'Booking not found' });

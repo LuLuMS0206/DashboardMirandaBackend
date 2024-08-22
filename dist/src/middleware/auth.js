@@ -17,6 +17,7 @@ function authenticateTokenMiddleware(req, res, next) {
         next();
     }
     catch (error) {
+        console.log('we are here =', error);
         res.sendStatus(403);
     }
 }

@@ -7,7 +7,7 @@ const userController = express.Router();
 userController.get('/', async (_req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
     const users = await UserService.fetchAll();
-    return res.json({ users });
+    return res.json(users);
   } catch (error) {
     next(error);
   }
@@ -18,7 +18,7 @@ userController.get('/:id', async (req: Request, res: Response, next: NextFunctio
     const id = req.params.id;
     const user = await UserService.fetchOne(id);
     if (user) {
-      return res.json({ user });
+      return res.json(user);
     } else {
       return res.status(404).json({ message: 'User not found' });
     }
@@ -31,7 +31,7 @@ userController.post('/', async (req: Request, res: Response, next: NextFunction)
   try {
     const newUser = req.body as User;
     const user = await UserService.addUser(newUser);
-    return res.status(201).json({ user });
+    return res.status(201).json(user);
   } catch (error) {
     next(error);
   }
@@ -53,7 +53,7 @@ userController.put('/:id', async (req: Request, res: Response, next: NextFunctio
     const modifiedUser = req.body as User;
     const user = await UserService.modifyUser({ ...modifiedUser, _id: id });
     if (user) {
-      return res.json({ user });
+      return res.json(user);
     } else {
       return res.status(404).json({ message: 'User not found' });
     }

@@ -18,7 +18,7 @@ const userController = express_1.default.Router();
 userController.get('/', (_req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const users = yield userServices_1.UserService.fetchAll();
-        return res.json({ users });
+        return res.json(users);
     }
     catch (error) {
         next(error);
@@ -29,7 +29,7 @@ userController.get('/:id', (req, res, next) => __awaiter(void 0, void 0, void 0,
         const id = req.params.id;
         const user = yield userServices_1.UserService.fetchOne(id);
         if (user) {
-            return res.json({ user });
+            return res.json(user);
         }
         else {
             return res.status(404).json({ message: 'User not found' });
@@ -43,7 +43,7 @@ userController.post('/', (req, res, next) => __awaiter(void 0, void 0, void 0, f
     try {
         const newUser = req.body;
         const user = yield userServices_1.UserService.addUser(newUser);
-        return res.status(201).json({ user });
+        return res.status(201).json(user);
     }
     catch (error) {
         next(error);
@@ -65,7 +65,7 @@ userController.put('/:id', (req, res, next) => __awaiter(void 0, void 0, void 0,
         const modifiedUser = req.body;
         const user = yield userServices_1.UserService.modifyUser(Object.assign(Object.assign({}, modifiedUser), { _id: id }));
         if (user) {
-            return res.json({ user });
+            return res.json(user);
         }
         else {
             return res.status(404).json({ message: 'User not found' });

@@ -74,7 +74,7 @@ const roomController = express.Router();
 roomController.get('/', async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const rooms = await RoomService.fetchAll();
-        res.json({ rooms });
+        res.json(rooms);
     } catch (error) {
         next(error);
     }
@@ -85,7 +85,7 @@ roomController.get('/:id', async (req: Request, res: Response, next: NextFunctio
         const id = req.params.id; 
         const room = await RoomService.fetchOne(id);
         if (room) {
-            res.json({ room });
+            res.json(room);
         } else {
             res.status(404).json({ message: 'Room not found' });
         }
@@ -98,7 +98,7 @@ roomController.post('/', async (req: Request, res: Response, next: NextFunction)
     try {
         const newRoom = req.body as RoomInterface;
         const room = await RoomService.addRoom(newRoom);
-        res.status(201).json({ room });
+        res.status(201).json(room);
     } catch (error) {
         next(error);
     }
@@ -120,7 +120,7 @@ roomController.put('/:id', async (req: Request, res: Response, next: NextFunctio
         const modifiedRoom = req.body as RoomInterface;
         const room = await RoomService.modifyRoom({ ...modifiedRoom, _id: id });
         if (room) {
-            res.json({ room });
+            res.json(room);
         } else {
             res.status(404).json({ message: 'Room not found' });
         }

@@ -6,10 +6,9 @@ const bookingController = express.Router();
 
 bookingController.get('/', async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        console.log('here');
         
         const bookings = await BookingService.fetchAll();
-        res.json({ bookings });
+        res.json(bookings);
     } catch (error) {
         next(error);
     }
@@ -20,7 +19,7 @@ bookingController.get('/:id', async (req: Request, res: Response, next: NextFunc
         const id = req.params.id; 
         const booking = await BookingService.fetchOne(id);
         if (booking) {
-            res.json({ booking });
+            res.json(booking);
         } else {
             res.status(404).json({ message: 'Booking not found' });
         }
@@ -33,7 +32,7 @@ bookingController.post('/', async (req: Request, res: Response, next: NextFuncti
     try {
         const newBooking = req.body as Booking;
         const booking = await BookingService.addBooking(newBooking);
-        res.status(201).json({ booking });
+        res.status(201).json(booking);
     } catch (error) {
         next(error);
     }
@@ -55,7 +54,7 @@ bookingController.put('/:id', async (req: Request, res: Response, next: NextFunc
         const modifiedBooking = req.body as Booking;
         const booking = await BookingService.modifyBooking({ ...modifiedBooking, id });
         if (booking) {
-            res.json({ booking });
+            res.json(booking);
         } else {
             res.status(404).json({ message: 'Booking not found' });
         }

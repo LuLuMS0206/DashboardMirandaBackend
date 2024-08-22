@@ -22,6 +22,7 @@ const contactController_1 = __importDefault(require("./controllers/contactContro
 const loginController_1 = __importDefault(require("./controllers/loginController"));
 const auth_1 = require("./middleware/auth");
 const mongoose_1 = __importDefault(require("mongoose"));
+const cors_1 = __importDefault(require("cors"));
 const start = () => __awaiter(void 0, void 0, void 0, function* () {
     try {
         yield mongoose_1.default.connect("mongodb+srv://luciamacho00:wtNqhbB03R7ZFY2w@cluster0.qavfymp.mongodb.net/mirandaMongo");
@@ -34,8 +35,9 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
 start();
 process.env.TOKEN_SECRET;
 exports.app = (0, express_1.default)();
+exports.app.use((0, cors_1.default)());
 exports.app.use(express_1.default.json());
-exports.app.use('/', (_req, res) => {
+exports.app.use('/login', (_req, res) => {
     return res.send('Lucia');
 });
 exports.app.use('/auth', loginController_1.default);
