@@ -6,7 +6,6 @@ const bookingController = express.Router();
 
 bookingController.get('/', async (_req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        
         const bookings = await BookingService.fetchAll();
         res.json(bookings);
     } catch (error) {

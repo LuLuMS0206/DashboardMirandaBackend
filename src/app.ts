@@ -42,7 +42,7 @@ app.use('/users', authenticateTokenMiddleware, userController);
 app.use('/contacts', authenticateTokenMiddleware, contactController);
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(err.stack);
+  console.error(err);
   res.status(500).json({ error: 'Unexpected error occurred' });
 });
 

@@ -23,7 +23,7 @@ async function seedDatabase() {
             checkOut: faker.date.future().toISOString(),
             roomType: faker.helpers.arrayElement(['Single', 'Double', 'Suite']),
             specialRequest: faker.lorem.sentence(),
-            status: faker.helpers.arrayElement(['Confirmed', 'Pending', 'Cancelled']),
+            status: faker.helpers.arrayElement(['Check In', 'Check Out', 'In Progress']),
             orderDate: faker.date.past().toISOString()
         });
         await bookingModel.save();
