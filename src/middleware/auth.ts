@@ -15,6 +15,8 @@ export function authenticateTokenMiddleware(req: AuthRequest, res: Response, nex
     jwt.verify(token, process.env.TOKEN_SECRET!);
     next();
   } catch (error) {
+    console.log('we are here =', error);
+    
     res.sendStatus(403);
   }
 }

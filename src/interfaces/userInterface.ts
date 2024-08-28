@@ -1,11 +1,11 @@
 export interface User {
-    id: string;
+    _id?: string; 
     name: string;
     email: string;
     startDate: string;
     description: string;
     contact: string;
-    status: 'ACTIVE' | 'INACTIVE';
+    status: "ACTIVE" | "INACTIVE";
     foto: string;
     password?: string;
 }

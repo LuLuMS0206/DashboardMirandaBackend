@@ -1,26 +1,42 @@
 import express, { NextFunction, Request, Response } from 'express';
-// import path from 'path';
 import bookingController from './controllers/bookingControllers';
 import 'dotenv/config';
 import roomsController from './controllers/roomController';
 import userController from './controllers/userContoller';
-import contactController from './controllers/contactController'
-import loginController from './controllers/loginController'
-
+import contactController from './controllers/contactController';
+import loginController from './controllers/loginController';
 import { authenticateTokenMiddleware } from './middleware/auth';
+import mongoose from 'mongoose';
+import cors from 'cors'; 
 
-process.env.TOKEN_SECRET;
+const start = async () => {
+  try {
+    await mongoose.connect(
+      "mongodb+srv://luciamacho00:wtNqhbB03R7ZFY2w@cluster0.qavfymp.mongodb.net/mirandaMongo"
+    );
+  } catch (error) {
+    console.error(error);
+    process.exit(1);
+  }
+};
+start();
+
+const corsOptions = {
+  origin: '*', 
+  optionsSuccessStatus: 200, 
+};
 
 export const app = express();
-export const port = 3000;
-app.use(express.json());
+// app.use(cors()); 
 
+app.use(cors(corsOptions));
+
+app.use(express.json());
 app.use('/auth', loginController);
-app.use(authenticateTokenMiddleware);
-app.use('/bookings', bookingController);
-app.use('/rooms', roomsController);
-app.use('/users', userController);
-app.use('/contacts', contactController);
+app.use('/bookings',authenticateTokenMiddleware, bookingController);
+app.use('/rooms', authenticateTokenMiddleware, roomsController);
+app.use('/users', authenticateTokenMiddleware, userController);
+app.use('/contacts', authenticateTokenMiddleware, contactController);
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.error(err.stack);
