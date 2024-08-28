@@ -1,5 +1,3 @@
-
-
 import express, { NextFunction, Request, Response } from 'express';
 import bookingController from './controllers/bookingControllers';
 import 'dotenv/config';
@@ -23,27 +21,24 @@ const start = async () => {
 };
 start();
 
-process.env.TOKEN_SECRET;
+const corsOptions = {
+  origin: '*', 
+  optionsSuccessStatus: 200, 
+};
 
 export const app = express();
+// app.use(cors()); 
 
-app.use(cors()); 
+app.use(cors(corsOptions));
 
 app.use(express.json());
-
-app.use('/login', (_req, res) => {
-  return res.send('Lucia');
-});
-
 app.use('/auth', loginController);
-app.use('/bookings', authenticateTokenMiddleware, bookingController);
+app.use('/bookings',authenticateTokenMiddleware, bookingController);
 app.use('/rooms', authenticateTokenMiddleware, roomsController);
 app.use('/users', authenticateTokenMiddleware, userController);
 app.use('/contacts', authenticateTokenMiddleware, contactController);
 
 app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(err);
+  console.error(err.stack);
   res.status(500).json({ error: 'Unexpected error occurred' });
 });
-
-

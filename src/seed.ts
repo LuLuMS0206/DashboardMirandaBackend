@@ -4,12 +4,17 @@ import { BookingModel } from './models/bookingModel';
 import { RoomModel } from './models/roomModel';
 import { UserModel } from './models/userModel';
 import { ContactModel } from './models/contactModel';
-import { connectDB } from '../connectDB'; 
+
 
 async function seedDatabase() {
-    console.log('before');
-    await connectDB();
-    console.log('after');
+    try {
+        await mongoose.connect(
+        "mongodb+srv://luciamacho00:wtNqhbB03R7ZFY2w@cluster0.qavfymp.mongodb.net/mirandaMongo"
+        );
+    } catch (error) {
+        console.error(error);
+        process.exit(1);
+    }
     
     await BookingModel.deleteMany({});
     await RoomModel.deleteMany({});
