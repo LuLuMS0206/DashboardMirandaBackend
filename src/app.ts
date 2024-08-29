@@ -9,7 +9,7 @@ import { authenticateTokenMiddleware } from './middleware/auth';
 import mongoose from 'mongoose';
 import cors from 'cors'; 
 
-const start = async () => {
+export const start = async () => {
   try {
     await mongoose.connect(
       "mongodb+srv://luciamacho00:wtNqhbB03R7ZFY2w@cluster0.qavfymp.mongodb.net/mirandaMongo"

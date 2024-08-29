@@ -4,22 +4,90 @@ import { BookingModel } from './models/bookingModel';
 import { RoomModel } from './models/roomModel';
 import { UserModel } from './models/userModel';
 import { ContactModel } from './models/contactModel';
+import { connection } from './connectDB';
+import { start } from './../src/app';
 
 
-async function seedDatabase() {
-    try {
-        await mongoose.connect(
-        "mongodb+srv://luciamacho00:wtNqhbB03R7ZFY2w@cluster0.qavfymp.mongodb.net/mirandaMongo"
-        );
-    } catch (error) {
-        console.error(error);
-        process.exit(1);
-    }
-    
-    await BookingModel.deleteMany({});
-    await RoomModel.deleteMany({});
-    await UserModel.deleteMany({});
-    await ContactModel.deleteMany({});
+
+start()
+
+export const seedDatabase = async () => {
+
+    await connection.query('USE miranda');
+    await connection.query('DROP TABLE IF EXISTS bookings');
+    await connection.query('DROP TABLE IF EXISTS rooms');
+    await connection.query('DROP TABLE IF EXISTS contact');
+    await connection.query('DROP TABLE IF EXISTS users');
+    await connection.query('DROP TABLE IF EXISTS amenities');
+
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS bookings (
+            id INT AUTO_INCREMENT NOT NULL,
+            guest VARCHAR(255) NOT NULL,
+    checkIn VARCHAR(255) NOT NULL,
+    checkOut VARCHAR(255) NOT NULL,
+    roomType VARCHAR(255) NOT NULL,
+    specialRequest VARCHAR(255),
+    status VARCHAR(255) NOT NULL,
+    orderDate VARCHAR(255) NOT NULL,
+    PRIMARY KEY (id)
+        )
+    `);
+
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS rooms (
+         _id INT AUTO_INCREMENT NOT NULL,
+    image VARCHAR(255) NOT NULL,
+    roomNumber VARCHAR(255) NOT NULL,
+    roomType VARCHAR(255) NOT NULL,
+    price INT NOT NULL,
+    offerPrice INT NOT NULL,
+    status VARCHAR(255) NOT NULL,
+    availability VARCHAR(255) NOT NULL,
+    PRIMARY KEY (_id)
+        )
+    `);
+
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS contact (
+           id INT AUTO_INCREMENT NOT NULL,
+    date VARCHAR(255) NOT NULL,
+    client_name VARCHAR(255) NOT NULL,
+    client_email VARCHAR(255) NOT NULL,
+    client_phone VARCHAR(255) NOT NULL,
+    subject VARCHAR(255) NOT NULL,
+    comment VARCHAR(255) NOT NULL,
+    status ENUM('public', 'archived') NOT NULL,
+    PRIMARY KEY (id)
+        )
+    `);
+
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS users (
+           _id INT AUTO_INCREMENT NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    email VARCHAR(255) NOT NULL,
+    startDate VARCHAR(255) NOT NULL,
+    description VARCHAR(255) NOT NULL,
+    contact VARCHAR(255) NOT NULL,
+    status ENUM('ACTIVE', 'INACTIVE') NOT NULL,
+    foto VARCHAR(255) NOT NULL,
+    password VARCHAR(255),
+    PRIMARY KEY (_id)
+        )
+    `);
+
+    await connection.query(`
+        CREATE TABLE IF NOT EXISTS amenities (
+            _id INT AUTO_INCREMENT NOT NULL, 
+            name VARCHAR (255) NOT NULL, 
+            id_room INT NOT NULL, 
+            PRIMARY KEY (_id), 
+            FOREIGN KEY(id_room)
+ REFERENCES rooms (_id)
+        )
+    `);
+
 
     for (let i = 0; i < 10; i++) {
         const bookingModel = new BookingModel({
