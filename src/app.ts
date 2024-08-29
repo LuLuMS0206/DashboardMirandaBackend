@@ -6,14 +6,14 @@ import userController from './controllers/userContoller';
 import contactController from './controllers/contactController';
 import loginController from './controllers/loginController';
 import { authenticateTokenMiddleware } from './middleware/auth';
-import mongoose from 'mongoose';
 import cors from 'cors'; 
+import { connection } from 'connectDB';
 
 export const start = async () => {
   try {
-    await mongoose.connect(
-      "mongodb+srv://luciamacho00:wtNqhbB03R7ZFY2w@cluster0.qavfymp.mongodb.net/mirandaMongo"
-    );
+    
+    await connection;
+
   } catch (error) {
     console.error(error);
     process.exit(1);
