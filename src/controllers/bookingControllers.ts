@@ -1,6 +1,8 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { BookingService } from './../services/bookingService'; 
 import { Booking } from './../interfaces/bookingInterface';
+import { createValidationMiddleware } from 'middleware/validation';
+import { bookingSchema } from 'validators/bookingValidators';
 
 const bookingController = express.Router();
 
@@ -15,7 +17,7 @@ bookingController.get('/', async (_req: Request, res: Response, next: NextFuncti
 
 bookingController.get('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const id = req.params.id; 
+        const id = parseInt(req.params.id); 
         const booking = await BookingService.fetchOne(id);
         if (booking) {
             res.json(booking);
@@ -27,7 +29,7 @@ bookingController.get('/:id', async (req: Request, res: Response, next: NextFunc
     }
 });
 
-bookingController.post('/', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+bookingController.post('/', createValidationMiddleware(bookingSchema), async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const newBooking = req.body as Booking;
         const booking = await BookingService.addBooking(newBooking);
@@ -39,7 +41,7 @@ bookingController.post('/', async (req: Request, res: Response, next: NextFuncti
 
 bookingController.delete('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const id = req.params.id;
+        const id = parseInt(req.params.id);
         await BookingService.removeBooking(id);
         res.status(204).send(); 
     } catch (error) {
@@ -47,9 +49,9 @@ bookingController.delete('/:id', async (req: Request, res: Response, next: NextF
     }
 });
 
-bookingController.put('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+bookingController.put('/:id', createValidationMiddleware(bookingSchema), async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const id = req.params.id; 
+        const id = parseInt(req.params.id); 
         const modifiedBooking = req.body as Booking;
         const booking = await BookingService.modifyBooking({ ...modifiedBooking, id });
         if (booking) {

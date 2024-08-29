@@ -68,6 +68,8 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { RoomService } from './../services/roomServices';
 import { RoomInterface } from './../interfaces/roomInterface';
+import { roomSchema } from 'validators/roomsValidators';
+import { createValidationMiddleware } from 'middleware/validation';
 
 const roomController = express.Router();
 
@@ -82,7 +84,7 @@ roomController.get('/', async (_req: Request, res: Response, next: NextFunction)
 
 roomController.get('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const id = req.params.id; 
+        const id = parseInt(req.params.id); 
         const room = await RoomService.fetchOne(id);
         if (room) {
             res.json(room);
@@ -94,7 +96,7 @@ roomController.get('/:id', async (req: Request, res: Response, next: NextFunctio
     }
 });
 
-roomController.post('/', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+roomController.post('/',  createValidationMiddleware(roomSchema), async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const newRoom = req.body as RoomInterface;
         const room = await RoomService.addRoom(newRoom);
@@ -106,7 +108,7 @@ roomController.post('/', async (req: Request, res: Response, next: NextFunction)
 
 roomController.delete('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-        const id = req.params.id; 
+        const id = parseInt(req.params.id); 
         await RoomService.removeRoom(id);
         res.status(204).send(); 
     } catch (error) {
@@ -114,7 +116,7 @@ roomController.delete('/:id', async (req: Request, res: Response, next: NextFunc
     }
 });
 
-roomController.put('/:id', async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+roomController.put('/:id',  createValidationMiddleware(roomSchema), async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const id = req.params.id; 
         const modifiedRoom = req.body as RoomInterface;
