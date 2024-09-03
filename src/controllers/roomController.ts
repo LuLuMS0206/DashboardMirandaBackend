@@ -68,8 +68,8 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { RoomService } from './../services/roomServices';
 import { RoomInterface } from './../interfaces/roomInterface';
-import { roomSchema } from 'validators/roomsValidators';
-import { createValidationMiddleware } from 'middleware/validation';
+import { roomSchema } from './../validators/roomsValidators';
+import { createValidationMiddleware } from './../middleware/validation';
 
 const roomController = express.Router();
 

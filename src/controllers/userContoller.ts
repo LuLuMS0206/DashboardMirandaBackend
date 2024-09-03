@@ -15,7 +15,7 @@ userController.get('/', async (_req: Request, res: Response, next: NextFunction)
 
 userController.get('/:id', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const id = req.params.id;
+    const id = req.params.id; // id como string
     const user = await UserService.fetchOne(id);
     if (user) {
       return res.json(user);
@@ -39,9 +39,9 @@ userController.post('/', async (req: Request, res: Response, next: NextFunction)
 
 userController.delete('/:id', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const id = req.params.id;
+    const id = req.params.id; // id como string
     await UserService.removeUser(id);
-    return res.status(204).send(); 
+    return res.status(204).send();
   } catch (error) {
     next(error);
   }
@@ -49,7 +49,7 @@ userController.delete('/:id', async (req: Request, res: Response, next: NextFunc
 
 userController.put('/:id', async (req: Request, res: Response, next: NextFunction): Promise<Response | void> => {
   try {
-    const id = req.params.id;
+    const id = req.params.id; // id como string
     const modifiedUser = req.body as User;
     const user = await UserService.modifyUser({ ...modifiedUser, _id: id });
     if (user) {

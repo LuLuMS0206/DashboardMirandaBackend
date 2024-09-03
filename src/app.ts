@@ -7,11 +7,10 @@ import contactController from './controllers/contactController';
 import loginController from './controllers/loginController';
 import { authenticateTokenMiddleware } from './middleware/auth';
 import cors from 'cors'; 
-import { connection } from 'connectDB';
+import { connection } from './connectDB';
 
 export const start = async () => {
   try {
-    
     await connection;
 
   } catch (error) {

@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import { BookingService } from './../services/bookingService'; 
 import { Booking } from './../interfaces/bookingInterface';
 import { createValidationMiddleware } from './../middleware/validation';
-import { bookingSchema } from 'validators/bookingValidators';
+import { bookingSchema } from './../validators/bookingValidators';
 
 const bookingController = express.Router();
 

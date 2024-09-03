@@ -1,24 +1,10 @@
 
 import { faker } from '@faker-js/faker';
-import { BookingModel } from './models/bookingModel';
-import { RoomModel } from './models/roomModel';
-import { UserModel } from './models/userModel';
-import { ContactModel } from './models/contactModel';
 import { connection } from './connectDB';
-import { start } from './../src/app';
-
-
-
-start()
 
 export const seedDatabase = async () => {
-
-    await connection.query('USE miranda');
-    await connection.query('DROP TABLE IF EXISTS bookings');
-    await connection.query('DROP TABLE IF EXISTS rooms');
-    await connection.query('DROP TABLE IF EXISTS contact');
-    await connection.query('DROP TABLE IF EXISTS users');
-    await connection.query('DROP TABLE IF EXISTS amenities');
+    const sql = `DROP TABLE IF EXISTS amenities, bookings, contacts, rooms, users;`;        
+    await connection.query(sql);
 
     await connection.query(`
         CREATE TABLE IF NOT EXISTS bookings (
@@ -37,7 +23,6 @@ export const seedDatabase = async () => {
     await connection.query(`
         CREATE TABLE IF NOT EXISTS rooms (
          _id INT AUTO_INCREMENT NOT NULL,
-    image VARCHAR(255) NOT NULL,
     roomNumber VARCHAR(255) NOT NULL,
     roomType VARCHAR(255) NOT NULL,
     price INT NOT NULL,
@@ -105,7 +90,7 @@ export const seedDatabase = async () => {
     };
 
     for (let i = 0; i < 10; i++) {
-        const roomModel = new RoomModel({
+        const roomModel = {
             image: faker.image.url(),
             roomNumber: faker.string.uuid(),
             roomType: faker.helpers.arrayElement(['Single', 'Double', 'Suite']),
@@ -114,14 +99,14 @@ export const seedDatabase = async () => {
             offerPrice: faker.number.int({ min: 40, max: 450 }),
             status: faker.helpers.arrayElement(['Available', 'Occupied']),
             availability: faker.helpers.arrayElement(['Morning', 'Evening', 'Night'])
-        });
-        await connection.query(' INSERT INTO bookings (image, roomNumber, roomType, amenities, price, offerPrice, status, availability  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',        
-            [roomModel.image, roomModel.roomNumber, roomModel.roomType, roomModel.amenities, roomModel.price, roomModel.status, roomModel.offerPrice, roomModel.availability]);
+        };
+        await connection.query(' INSERT INTO rooms (roomNumber, roomType, price, offerPrice, status, availability  ) VALUES ( ?, ?, ?, ?, ?, ?)',        
+            [roomModel.roomNumber, roomModel.roomType, roomModel.price, roomModel.offerPrice, roomModel.status, roomModel.availability]);
         console.log('roomSaved');
     };
 
     for (let i = 0; i < 10; i++) {
-        const userModel = new UserModel({
+        const userModel = {
             name: faker.person.fullName(),
             email: faker.internet.email(),
             startDate: faker.date.past().toISOString(),
@@ -130,14 +115,14 @@ export const seedDatabase = async () => {
             status: faker.helpers.arrayElement(['ACTIVE', 'INACTIVE']),
             foto: faker.image.avatar(),
             password: faker.internet.password()
-        });
-        await connection.query(' INSERT INTO bookings (name, email, startDate, description, contact, status, status, foto, password  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',        
+        };
+        await connection.query(' INSERT INTO users (name, email, startDate, description, contact, status, foto, password  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',        
             [userModel.name, userModel.email, userModel.startDate, userModel.description, userModel.contact, userModel.status, userModel.foto, userModel.password]);
         console.log('userSaved');
     };
 
     for (let i = 0; i < 10; i++) {
-        const contactModel = new ContactModel({
+        const contactModel = {
             date: faker.date.past().toISOString(),
             client: {
                 name: faker.person.fullName(),
@@ -145,11 +130,11 @@ export const seedDatabase = async () => {
                 phone: faker.phone.number()
             },
             subject: faker.lorem.words(),
-            comment: faker.lorem.sentences(),
+            comment: faker.lorem.words(),
             status: faker.helpers.arrayElement(['public', 'archived'])
-        });
+        };
         await connection.query(
-            'INSERT INTO bookings (date, clientName, clientEmail, clientPhone, subject, comment, status) VALUES (?, ?, ?, ?, ?, ?, ?)',        
+            'INSERT INTO contact (date, client_name, client_email, client_phone, subject, comment, status) VALUES (?, ?, ?, ?, ?, ?, ?)',        
             [
                 contactModel.date, 
                 contactModel.client.name, 
@@ -165,4 +150,5 @@ export const seedDatabase = async () => {
 
 }
 
-
+seedDatabase()
+connection.end()
