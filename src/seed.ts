@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+
 import { faker } from '@faker-js/faker';
 import { BookingModel } from './models/bookingModel';
 import { RoomModel } from './models/roomModel';
@@ -90,7 +90,7 @@ export const seedDatabase = async () => {
 
 
     for (let i = 0; i < 10; i++) {
-        const bookingModel = new BookingModel({
+        const bookingModel = {
             guest: faker.person.fullName(),
             checkIn: faker.date.future().toISOString(),
             checkOut: faker.date.future().toISOString(),
@@ -98,8 +98,9 @@ export const seedDatabase = async () => {
             specialRequest: faker.lorem.sentence(),
             status: faker.helpers.arrayElement(['Check In', 'Check Out', 'In Progress']),
             orderDate: faker.date.past().toISOString()
-        });
-        await bookingModel.save();
+        };
+        await connection.query(' INSERT INTO bookings (guest, checkIn, checkOut, roomType, specialRequest, status, orderDate  ) VALUES (?, ?, ?, ?, ?, ?, ?)',        
+            [bookingModel.guest, bookingModel.checkIn, bookingModel.checkOut, bookingModel.roomType, bookingModel.specialRequest, bookingModel.status, bookingModel.orderDate]);
         console.log('bookingSaved');
     };
 
@@ -114,7 +115,8 @@ export const seedDatabase = async () => {
             status: faker.helpers.arrayElement(['Available', 'Occupied']),
             availability: faker.helpers.arrayElement(['Morning', 'Evening', 'Night'])
         });
-        await roomModel.save();
+        await connection.query(' INSERT INTO bookings (image, roomNumber, roomType, amenities, price, offerPrice, status, availability  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',        
+            [roomModel.image, roomModel.roomNumber, roomModel.roomType, roomModel.amenities, roomModel.price, roomModel.status, roomModel.offerPrice, roomModel.availability]);
         console.log('roomSaved');
     };
 
@@ -129,7 +131,8 @@ export const seedDatabase = async () => {
             foto: faker.image.avatar(),
             password: faker.internet.password()
         });
-        await userModel.save();
+        await connection.query(' INSERT INTO bookings (name, email, startDate, description, contact, status, status, foto, password  ) VALUES (?, ?, ?, ?, ?, ?, ?, ?)',        
+            [userModel.name, userModel.email, userModel.startDate, userModel.description, userModel.contact, userModel.status, userModel.foto, userModel.password]);
         console.log('userSaved');
     };
 
@@ -145,15 +148,21 @@ export const seedDatabase = async () => {
             comment: faker.lorem.sentences(),
             status: faker.helpers.arrayElement(['public', 'archived'])
         });
-        await contactModel.save();
+        await connection.query(
+            'INSERT INTO bookings (date, clientName, clientEmail, clientPhone, subject, comment, status) VALUES (?, ?, ?, ?, ?, ?, ?)',        
+            [
+                contactModel.date, 
+                contactModel.client.name, 
+                contactModel.client.email, 
+                contactModel.client.phone, 
+                contactModel.subject, 
+                contactModel.comment, 
+                contactModel.status, 
+            ]
+        );
         console.log('contactSaved');
     };
 
-    console.log('Database seeded!');
-    mongoose.connection.close();
 }
 
-seedDatabase().catch(err => {
-    console.error('Error seeding database:', err);
-    mongoose.connection.close();
-});
+
