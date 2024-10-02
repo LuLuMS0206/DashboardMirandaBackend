@@ -41,7 +41,7 @@ jobs:
     - name: Set up environment variables
       run: |
           echo "TOKEN_SECRET=${{ secrets.TOKEN_SECRET }}" >> $GITHUB_ENV
-          echo "MONGO_KEY=${{ secrets.MONGO_KEY }}" >> $GITHUB_ENV
+          echo "MONGO_STRING=${{ secrets.MONGO_STRING }}" >> $GITHUB_ENV
 
     - name: Deploy with Serverless v3
       run: serverless deploy
